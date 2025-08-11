@@ -28,9 +28,10 @@ export async function updateSession(request: NextRequest) {
             const cookieOptions = {
               ...options,
               sameSite: 'lax' as const,
-              secure: process.env.NODE_ENV === 'production',
-              httpOnly: true,
+              secure: false, // Allow non-HTTPS for localhost
+              httpOnly: false, // Allow JS access for debugging
             }
+            console.log('Middleware setting cookie:', { name, cookieOptions })
             supabaseResponse.cookies.set(name, value, cookieOptions)
           })
         },

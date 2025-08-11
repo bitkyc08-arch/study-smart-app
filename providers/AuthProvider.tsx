@@ -22,26 +22,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const supabase = createClient()
 
+
   useEffect(() => {
     // Check active sessions and sets the user
     const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      setLoading(false)
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+        setLoading(false)
+      } catch (error) {
+        console.error('AuthProvider: Error getting session', error)
+        setUser(null)
+        setLoading(false)
+      }
     }
 
     getUser()
 
     // Listen for changes on auth state (sign in, sign out, etc.)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
         setUser(session?.user ?? null)
         setLoading(false)
+        
+        // Force refresh after successful OAuth login
+        if (event === 'SIGNED_IN' && session?.user) {
+          window.location.reload()
+        }
       }
     )
 
     return () => subscription.unsubscribe()
   }, [supabase])
+
 
   const signIn = async (email: string, password: string) => {
     try {

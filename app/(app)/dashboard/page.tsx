@@ -4,7 +4,7 @@ import { getDashboardStats, formatDuration, formatTime } from '@/lib/dashboard-h
 import { WeeklyBarChart } from '@/components/charts/WeeklyBarChart'
 import { SubjectPieChart } from '@/components/charts/SubjectPieChart'
 import { TodayRadialChart } from '@/components/charts/TodayRadialChart'
-import { RefreshButton } from '@/components/dashboard/RefreshButton'
+// import { RefreshButton } from '@/components/dashboard/RefreshButton' // Temporarily disabled
 import { DdayProgressChart } from '@/components/charts/DdayProgressChart'
 
 export const dynamic = 'force-dynamic'
@@ -29,7 +29,7 @@ export default async function DashboardPage() {
           <h1 className="font-sans text-display-md text-text-primary">Dashboard</h1>
           <p className="text-body-md text-text-secondary mt-1">Track your study progress</p>
         </div>
-        <RefreshButton />
+        {/* <RefreshButton /> */}
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">

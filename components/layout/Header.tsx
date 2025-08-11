@@ -65,6 +65,7 @@ export function Header() {
   const pathname = usePathname()
   const { settings, loadSettings } = useGoalSettingsStore()
   
+  
   useEffect(() => {
     const today = new Date()
     const dateString = today.toLocaleDateString(undefined, { 
