@@ -6,7 +6,7 @@ export class ImageParser implements FileParser {
   }
 
   async parse(file: File | Buffer): Promise<ParsedFile> {
-    const blob = file instanceof File ? file : new Blob([file]);
+    const blob = file instanceof File ? file : new Blob([new Uint8Array(file)]);
     const base64 = await this.blobToBase64(blob);
     
     // For images, we return base64 for multimodal AI
