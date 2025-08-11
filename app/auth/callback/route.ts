@@ -27,9 +27,9 @@ export async function GET(request: NextRequest) {
                 ...options,
                 sameSite: 'lax' as const,
                 secure: isProduction, // true in production (HTTPS), false in development (HTTP)
-                httpOnly: isProduction, // true in production for security, false in development for debugging
+                httpOnly: false, // Keep false for debugging in production
               }
-              console.log('Setting cookie:', { name, environment: process.env.NODE_ENV, cookieOptions })
+              console.log('Setting cookie:', { name, environment: process.env.NODE_ENV, origin, cookieOptions })
               response.cookies.set(name, value, cookieOptions)
             })
           },
@@ -40,7 +40,12 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error && data?.user) {
-      console.log('OAuth login successful for user:', data.user.email)
+      console.log('OAuth login successful for user:', {
+        email: data.user.email,
+        id: data.user.id,
+        environment: process.env.NODE_ENV,
+        origin
+      })
       
       // 프로필이 자동으로 생성되었는지 확인
       const { error: profileError } = await supabase
@@ -59,7 +64,12 @@ export async function GET(request: NextRequest) {
       const { data: { session } } = await supabase.auth.getSession()
       
       if (session) {
-        console.log('Session confirmed, redirecting to:', next)
+        console.log('Session confirmed:', {
+          sessionId: session.access_token?.substring(0, 20) + '...',
+          userId: session.user?.id,
+          userEmail: session.user?.email,
+          redirectTo: next
+        })
         return response
       } else {
         console.error('Session not found after code exchange')

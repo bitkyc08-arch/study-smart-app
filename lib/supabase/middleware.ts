@@ -31,7 +31,7 @@ export async function updateSession(request: NextRequest) {
               ...options,
               sameSite: 'lax' as const,
               secure: isProduction, // true in production (HTTPS), false in development (HTTP)
-              httpOnly: isProduction, // true in production for security, false in development for debugging
+              httpOnly: false, // Keep false for debugging in production
             }
             console.log('Middleware setting cookie:', { name, environment: process.env.NODE_ENV, cookieOptions })
             supabaseResponse.cookies.set(name, value, cookieOptions)
