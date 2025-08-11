@@ -45,10 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null)
         setLoading(false)
         
-        // Force refresh after successful OAuth login
-        if (event === 'SIGNED_IN' && session?.user) {
-          window.location.reload()
-        }
+        // Remove auto-refresh - OAuth callback already handles redirect
       }
     )
 
