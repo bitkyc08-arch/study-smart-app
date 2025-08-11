@@ -25,13 +25,15 @@ export async function updateSession(request: NextRequest) {
             request,
           })
           cookiesToSet.forEach(({ name, value, options }) => {
+            // Dynamic cookie settings based on environment
+            const isProduction = process.env.NODE_ENV === 'production'
             const cookieOptions = {
               ...options,
               sameSite: 'lax' as const,
-              secure: false, // Allow non-HTTPS for localhost
-              httpOnly: false, // Allow JS access for debugging
+              secure: isProduction, // true in production (HTTPS), false in development (HTTP)
+              httpOnly: isProduction, // true in production for security, false in development for debugging
             }
-            console.log('Middleware setting cookie:', { name, cookieOptions })
+            console.log('Middleware setting cookie:', { name, environment: process.env.NODE_ENV, cookieOptions })
             supabaseResponse.cookies.set(name, value, cookieOptions)
           })
         },

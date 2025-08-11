@@ -21,14 +21,15 @@ export async function GET(request: NextRequest) {
           },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) => {
-              // Fix cookie settings for localhost
+              // Dynamic cookie settings based on environment
+              const isProduction = process.env.NODE_ENV === 'production'
               const cookieOptions = {
                 ...options,
                 sameSite: 'lax' as const,
-                secure: false, // Allow non-HTTPS for localhost
-                httpOnly: false, // Allow JS access for debugging
+                secure: isProduction, // true in production (HTTPS), false in development (HTTP)
+                httpOnly: isProduction, // true in production for security, false in development for debugging
               }
-              console.log('Setting cookie:', { name, cookieOptions })
+              console.log('Setting cookie:', { name, environment: process.env.NODE_ENV, cookieOptions })
               response.cookies.set(name, value, cookieOptions)
             })
           },
